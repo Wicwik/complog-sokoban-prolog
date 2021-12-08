@@ -79,12 +79,25 @@ get_S0(Pos, Width, Map, S0, NewS0):-
     get_next_up(Pos, Width, Map, NewLeftS0, NewUpS0),
     get_next_down(Pos, Width, Map, NewUpS0, NewDownS0),
 
-    get_crate(Pos, Map, NewDownS0, NewCS0),
+    get_free(Pos, Map, NewDownS0, NewFreeS0),
+    get_crate(Pos, Map, NewFreeS0, NewCS0),
     get_sokoban(Pos, Map, NewCS0, NewSS0),
     get_x(Pos, Map, NewSS0, NewXS0),
 
     NewPos is Pos + 1,
     get_S0(NewPos, Width, Map, NewXS0, NewS0),!.
+
+get_free(Pos, Map, S0, NewS0):-
+    nth0(Pos, Map, C),
+    C \== '#',
+    C \== 'C',
+    C \== 'c',
+    C \== 'S',
+    C \== 's',
+
+    append(S0, [free(Pos)], NewS0),!.
+
+get_free(_, _, S0, S0).
 
 get_next_right(Pos, Map, S0, NewS0):-
     nth0(Pos, Map, C),
